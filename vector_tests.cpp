@@ -350,6 +350,7 @@ TEST(PopBack, WithoutDefaultConstructor) {
     ASSERT_EQ(vec.capacity(), 3);
     for (int i = 0; i < vec.size(); ++i) {
         ASSERT_EQ(vec[i].get_value(), 10);
+
     }
 }
 
