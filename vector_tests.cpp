@@ -87,7 +87,7 @@ TEST(DefaultConstruct, WithoutDefaultConstructor) {
 }
 
 TEST(DefaultConstruct, Strings) {
-    bmstu::vector<std::string> vec;
+    bmstu::vector<std::wstring> vec;
     ASSERT_TRUE(vec.empty());
     ASSERT_EQ(vec.capacity(), 0);
 }
@@ -107,10 +107,10 @@ TEST(SizeConstructor, Integer) {
 }
 
 TEST(SizeConstructor, Strings) {
-    bmstu::vector<std::string> vec(10);
+    bmstu::vector<std::wstring> vec(10);
     ASSERT_EQ(vec.size(), 10);
     for (size_t i = 0; i < vec.size(); ++i) {
-        ASSERT_EQ(vec[i], "");
+        ASSERT_EQ(vec[i], L"");
     }
 }
 
@@ -130,9 +130,9 @@ TEST(InitializerListConstructor, Integer) {
 }
 
 TEST(InitializerListConstructor, Strings) {
-    bmstu::vector<std::string> vec{"Я", "умный вектор)"};
-    ASSERT_EQ(vec[0], "Я");
-    ASSERT_EQ(vec[1], "умный вектор)");
+    bmstu::vector<std::wstring> vec{L"Я", L"умный вектор)"};
+    ASSERT_EQ(vec[0], L"Я");
+    ASSERT_EQ(vec[1], L"умный вектор)");
 }
 
 TEST(CopyConstructor, WithoutMoveConstructor) {
@@ -153,8 +153,8 @@ TEST(CopyConstructor, Integer) {
 }
 
 TEST(CopyConstructor, Strings) {
-    bmstu::vector<std::string> vec{"Я", "очень", "умный вектор)"};
-    bmstu::vector<std::string> copy = vec;
+    bmstu::vector<std::wstring> vec{L"Я", L"очень", L"умный вектор)"};
+    bmstu::vector<std::wstring> copy = vec;
     ASSERT_TRUE(vec == copy);
 }
 
@@ -178,10 +178,10 @@ TEST(MoveConstructor, Integer) {
 }
 
 TEST(MoveConstructor, string) {
-    bmstu::vector<std::string> vec{"Я наиумнейший вектор", "Я наиумнейший вектор", "Я наиумнейший вектор",
-                                   "Я наиумнейший вектор", "Я наиумнейший вектор"};
-    bmstu::vector<std::string> move(std::move(vec));
-    std::string str = "Я наиумнейший вектор";
+    bmstu::vector<std::wstring> vec{L"Я наиумнейший вектор", L"Я наиумнейший вектор", L"Я наиумнейший вектор",
+                                   L"Я наиумнейший вектор", L"Я наиумнейший вектор"};
+    bmstu::vector<std::wstring> move(std::move(vec));
+    std::wstring str = L"Я наиумнейший вектор";
     ASSERT_EQ(str, str);
     elem_check(move, str);
 }
@@ -205,8 +205,8 @@ TEST(CopyAssign, Integer) {
 }
 
 TEST(CopyAssign, Strings) {
-    bmstu::vector<std::string> vec{"Я", "очень", "умный вектор)"};
-    bmstu::vector<std::string> copy = vec;
+    bmstu::vector<std::wstring> vec{L"Я", L"очень", L"умный вектор)"};
+    bmstu::vector<std::wstring> copy = vec;
     ASSERT_TRUE(vec == copy);
 }
 
@@ -230,12 +230,12 @@ TEST(MoveAssign, Integer) {
 }
 
 TEST(MoveAssign, Strings) {
-    bmstu::vector<std::string> vec{"Я наиумнейший вектор", "Я наиумнейший вектор", "Я наиумнейший вектор",
-                                   "Я наиумнейший вектор", "Я наиумнейший вектор"};
-    bmstu::vector<std::string> move = std::move(vec);
+    bmstu::vector<std::wstring> vec{L"Я наиумнейший вектор", L"Я наиумнейший вектор", L"Я наиумнейший вектор",
+                                   L"Я наиумнейший вектор", L"Я наиумнейший вектор"};
+    bmstu::vector<std::wstring> move = std::move(vec);
     ASSERT_EQ(move.size(), 5);
     for (size_t i = 0; i < move.size(); ++i) {
-        ASSERT_EQ(move[i], "Я наиумнейший вектор");
+        ASSERT_EQ(move[i], L"Я наиумнейший вектор");
     }
 }
 
@@ -252,19 +252,19 @@ TEST(Reserve, Integer) {
 }
 
 TEST(Reserve, Strings) {
-    bmstu::vector<std::string> vec{"Я", "ультрамега", "умный вектор!"};
+    bmstu::vector<std::wstring> vec{L"Я", L"ультрамега", L"умный вектор!"};
     vec.reserve(10);
     ASSERT_EQ(vec.capacity(), 10);
     ASSERT_EQ(vec.size(), 3);
-    ASSERT_EQ(vec[0], "Я");
-    ASSERT_EQ(vec[1], "ультрамега");
-    ASSERT_EQ(vec[2], "умный вектор!");
+    ASSERT_EQ(vec[0], L"Я");
+    ASSERT_EQ(vec[1], L"ультрамега");
+    ASSERT_EQ(vec[2], L"умный вектор!");
     vec.reserve(2);
     ASSERT_EQ(vec.capacity(), 10);
     ASSERT_EQ(vec.size(), 3);
-    ASSERT_EQ(vec[0], "Я");
-    ASSERT_EQ(vec[1], "ультрамега");
-    ASSERT_EQ(vec[2], "умный вектор!");
+    ASSERT_EQ(vec[0], L"Я");
+    ASSERT_EQ(vec[1], L"ультрамега");
+    ASSERT_EQ(vec[2], L"умный вектор!");
 }
 
 TEST(Reserve, WithoutMoveConstructor) {
@@ -297,17 +297,17 @@ TEST(Resize, Integer) {
 }
 
 TEST(Resize, Strings) {
-    bmstu::vector<std::string> vec{"Бебра", "Хантерс", "обязательно", "помогут", "девочкам"};
+    bmstu::vector<std::wstring> vec{L"Бебра", L"Хантерс", L"обязательно", L"помогут", L"девочкам"};
     vec.resize(1);
     ASSERT_EQ(vec.size(), 1);
     ASSERT_EQ(vec.capacity(), 5);
-    ASSERT_EQ(vec[0], "Бебра");
+    ASSERT_EQ(vec[0], L"Бебра");
     vec.resize(10);
     ASSERT_EQ(vec.size(), 10);
     ASSERT_EQ(vec.capacity(), 10);
-    ASSERT_EQ(vec[0], "Бебра");
+    ASSERT_EQ(vec[0], L"Бебра");
     for (int i = 1; i < vec.size(); ++i) {
-        ASSERT_EQ(vec[i], "");
+        ASSERT_EQ(vec[i], L"");
     }
 }
 
@@ -334,12 +334,12 @@ TEST(PopBack, Integer) {
 }
 
 TEST(PopBack, Strings) {
-    bmstu::vector<std::string> vec{"ИУ10", "ИУ10", "ИУ10"};
+    bmstu::vector<std::wstring> vec{L"ИУ10", L"ИУ10", L"ИУ10"};
     vec.pop_back();
     ASSERT_EQ(vec.size(), 2);
     ASSERT_EQ(vec.capacity(), 3);
     for (int i = 0; i < vec.size(); ++i) {
-        vec[i] = "ИУ10";
+        vec[i] = L"ИУ10";
     }
 }
 
@@ -350,7 +350,6 @@ TEST(PopBack, WithoutDefaultConstructor) {
     ASSERT_EQ(vec.capacity(), 3);
     for (int i = 0; i < vec.size(); ++i) {
         ASSERT_EQ(vec[i].get_value(), 10);
-
     }
 }
 
@@ -369,9 +368,9 @@ TEST(PushBack, Integer) {
 }
 
 TEST(PushBack, Strings) {
-    bmstu::vector<std::string> vec{"Я", "очень", "крутой", "охотник за"};
-    vec.push_back("беброй");
-    ASSERT_EQ(vec[4], "беброй");
+    bmstu::vector<std::wstring> vec{L"Я", L"очень", L"крутой", L"охотник за"};
+    vec.push_back(L"беброй");
+    ASSERT_EQ(vec[4], L"беброй");
 }
 
 TEST(Incert, Integer) {
@@ -383,11 +382,11 @@ TEST(Incert, Integer) {
 }
 
 TEST(Incert, Strings) {
-    bmstu::vector<std::string> vec{"Бебра", "луДшая", "организация", "на"};
-    vec.incert(vec.begin() + 1, "Хантерс");
-    vec.incert(vec.end(), "гитхабе");
-    ASSERT_EQ(vec[1], "Хантерс");
-    ASSERT_EQ(vec[vec.size() - 1], "гитхабе");
+    bmstu::vector<std::wstring> vec{L"Бебра", L"луДшая", L"организация", L"на"};
+    vec.incert(vec.begin() + 1, L"Хантерс");
+    vec.incert(vec.end(), L"гитхабе");
+    ASSERT_EQ(vec[1], L"Хантерс");
+    ASSERT_EQ(vec[vec.size() - 1], L"гитхабе");
 }
 
 TEST(Incert, WithoutDefaultConstructor) {
@@ -415,8 +414,8 @@ TEST(VecEqual, Integer) {
 }
 
 TEST(VecEqual, Stings) {
-    bmstu::vector<std::string> vec{"С++", "лучше", "Python"};
-    bmstu::vector<std::string> vec2{"С++", "лучше", "Python"};
+    bmstu::vector<std::wstring> vec{L"С++", L"лучше", L"Python"};
+    bmstu::vector<std::wstring> vec2{L"С++", L"лучше", L"Python"};
     ASSERT_TRUE(vec == vec2);
 }
 
@@ -439,8 +438,8 @@ TEST(NotVecEqual, Integer) {
 }
 
 TEST(NotVecEqual, Stings) {
-    bmstu::vector<std::string> vec{"С++", "лучше", "Python"};
-    bmstu::vector<std::string> vec2{"С++", "лучше", "Python"};
+    bmstu::vector<std::wstring> vec{L"С++", L"лучше", L"Python"};
+    bmstu::vector<std::wstring> vec2{L"С++", L"лучше", L"Python"};
     ASSERT_FALSE(vec != vec2);
 }
 
@@ -453,9 +452,9 @@ TEST(Cout, Integer) {
 }
 
 TEST(Cout, Strings) {
-    bmstu::vector<std::string> vec{"Платон", "Петров", "обязательно", "пройдёт", "стажировку", "в", "ВК"};
+    bmstu::vector<std::string> vec{"Bebra Hunters"};
     testing::internal::CaptureStdout();
     std::cout << vec;
     std::string output = testing::internal::GetCapturedStdout();
-    ASSERT_EQ("[Платон, Петров, обязательно, пройдёт, стажировку, в, ВК]", output);
+    ASSERT_EQ("[Bebra Hunters]", output);
 }
