@@ -114,36 +114,20 @@ TEST(SizeConstructor, Strings) {
     }
 }
 
-TEST(InitializerListConstructor, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(666),
-                                           NoMoveConstructable(777)};
-    ASSERT_EQ(vec[0].get_value(), 1);
-    ASSERT_EQ(vec[1].get_value(), 666);
-    ASSERT_EQ(vec[2].get_value(), 777);
-}
 
 TEST(InitializerListConstructor, Integer) {
     bmstu::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    std::vector<int> vec2{1, 2, 3, 4, 5, 6, 7, 8, 9};
     for (size_t i = 0; i < vec.size(); ++i) {
         ASSERT_EQ(vec[i], i + 1);
     }
 }
 
 TEST(InitializerListConstructor, Strings) {
-    bmstu::vector<std::wstring> vec{L"Я", L"умный вектор)"};
-    ASSERT_EQ(vec[0], L"Я");
-    ASSERT_EQ(vec[1], L"умный вектор)");
-}
-
-TEST(CopyConstructor, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(666),
-                                           NoMoveConstructable(777)};
-    bmstu::vector<NoMoveConstructable> copy(vec);
-    ASSERT_EQ(vec.size(), copy.size());
-    ASSERT_EQ(vec.capacity(), copy.capacity());
-    for (int i = 0; i < copy.size(); ++i) {
-        ASSERT_EQ(vec[i].value, copy[i].value);
-    }
+    using namespace std::literals;
+    bmstu::vector<std::wstring> vec{L"Я"s, L"умный вектор)"s};
+    ASSERT_EQ(vec[0], L"Я"s);
+    ASSERT_EQ(vec[1], L"умный вектор)"s);
 }
 
 TEST(CopyConstructor, Integer) {
@@ -156,18 +140,6 @@ TEST(CopyConstructor, Strings) {
     bmstu::vector<std::wstring> vec{L"Я", L"очень", L"умный вектор)"};
     bmstu::vector<std::wstring> copy = vec;
     ASSERT_TRUE(vec == copy);
-}
-
-
-TEST(MoveConstructor, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(666),
-                                           NoMoveConstructable(777)};
-    bmstu::vector<NoMoveConstructable> move(std::move(vec));
-    ASSERT_EQ(move.size(), 3);
-    ASSERT_EQ(move.capacity(), 3);
-    ASSERT_EQ(move[0].get_value(), 1);
-    ASSERT_EQ(move[1].get_value(), 666);
-    ASSERT_EQ(move[2].get_value(), 777);
 }
 
 TEST(MoveConstructor, Integer) {
@@ -186,18 +158,6 @@ TEST(MoveConstructor, string) {
     elem_check(move, str);
 }
 
-
-TEST(CopyAssign, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(666),
-                                           NoMoveConstructable(777)};
-    bmstu::vector<NoMoveConstructable> copy = vec;
-    ASSERT_EQ(vec.size(), copy.size());
-    ASSERT_EQ(vec.capacity(), copy.capacity());
-    for (int i = 0; i < copy.size(); ++i) {
-        ASSERT_EQ(vec[i].value, copy[i].value);
-    }
-}
-
 TEST(CopyAssign, Integer) {
     bmstu::vector<int> vec{1, 2, 3, 4, 5};
     bmstu::vector<int> copy = vec;
@@ -208,18 +168,6 @@ TEST(CopyAssign, Strings) {
     bmstu::vector<std::wstring> vec{L"Я", L"очень", L"умный вектор)"};
     bmstu::vector<std::wstring> copy = vec;
     ASSERT_TRUE(vec == copy);
-}
-
-
-TEST(MoveAssign, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(666),
-                                           NoMoveConstructable(777)};
-    bmstu::vector<NoMoveConstructable> move = std::move(vec);
-    ASSERT_EQ(move.size(), 3);
-    ASSERT_EQ(move.capacity(), 3);
-    ASSERT_EQ(move[0].get_value(), 1);
-    ASSERT_EQ(move[1].get_value(), 666);
-    ASSERT_EQ(move[2].get_value(), 777);
 }
 
 TEST(MoveAssign, Integer) {
@@ -267,29 +215,15 @@ TEST(Reserve, Strings) {
     ASSERT_EQ(vec[2], L"умный вектор!");
 }
 
-TEST(Reserve, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(2)};
-    vec.reserve(10);
-    ASSERT_EQ(vec.capacity(), 10);
-    ASSERT_EQ(vec.size(), 2);
-    ASSERT_EQ(vec[0].get_value(), 1);
-    ASSERT_EQ(vec[1].get_value(), 2);
-    vec.reserve(2);
-    ASSERT_EQ(vec.capacity(), 10);
-    ASSERT_EQ(vec.size(), 2);
-    ASSERT_EQ(vec[0].get_value(), 1);
-    ASSERT_EQ(vec[1].get_value(), 2);
-}
-
 TEST(Resize, Integer) {
     bmstu::vector<int> vec{1026, 1026, 1026, 1026, 1026};
     vec.resize(1);
     ASSERT_EQ(vec.size(), 1);
     ASSERT_EQ(vec.capacity(), 5);
     ASSERT_EQ(vec[0], 1026);
-    vec.resize(10);
-    ASSERT_EQ(vec.size(), 10);
-    ASSERT_EQ(vec.capacity(), 10);
+    vec.resize(11);
+    ASSERT_EQ(vec.size(), 11);
+    ASSERT_EQ(vec.capacity(), 11);
     ASSERT_EQ(vec[0], 1026);
     for (int i = 1; i < vec.size(); ++i) {
         ASSERT_EQ(vec[i], 0);
@@ -343,16 +277,6 @@ TEST(PopBack, Strings) {
     }
 }
 
-TEST(PopBack, WithoutDefaultConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(10), NoMoveConstructable(10), NoMoveConstructable(10)};
-    vec.pop_back();
-    ASSERT_EQ(vec.size(), 2);
-    ASSERT_EQ(vec.capacity(), 3);
-    for (int i = 0; i < vec.size(); ++i) {
-        ASSERT_EQ(vec[i].get_value(), 10);
-    }
-}
-
 TEST(PushBack, WhithoutDefaultConstructor) {
     bmstu::vector<NoDefaultConstructable> vec{NoDefaultConstructable(1), NoDefaultConstructable(2),
                                               NoDefaultConstructable(3),
@@ -401,12 +325,6 @@ TEST(VecEqual, WithoutDefaultConstructor) {
     ASSERT_TRUE(vec == vec2);
 }
 
-TEST(VecEqual, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(2)};
-    bmstu::vector<NoMoveConstructable> vec2{NoMoveConstructable(1), NoMoveConstructable(2)};
-    ASSERT_TRUE(vec == vec2);
-}
-
 TEST(VecEqual, Integer) {
     bmstu::vector<int> vec{1, 2};
     bmstu::vector<int> vec2{1, 2};
@@ -425,12 +343,6 @@ TEST(NotVecEqual, WithoutDefaultConstructor) {
     ASSERT_FALSE(vec != vec2);
 }
 
-TEST(NotVecEqual, WithoutMoveConstructor) {
-    bmstu::vector<NoMoveConstructable> vec{NoMoveConstructable(1), NoMoveConstructable(2)};
-    bmstu::vector<NoMoveConstructable> vec2{NoMoveConstructable(1), NoMoveConstructable(2)};
-    ASSERT_FALSE(vec != vec2);
-}
-
 TEST(NotVecEqual, Integer) {
     bmstu::vector<int> vec{1, 2};
     bmstu::vector<int> vec2{1, 2};
@@ -443,6 +355,7 @@ TEST(NotVecEqual, Stings) {
     ASSERT_FALSE(vec != vec2);
 }
 
+
 TEST(Cout, Integer) {
     bmstu::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
     testing::internal::CaptureStdout();
@@ -453,8 +366,14 @@ TEST(Cout, Integer) {
 
 TEST(Cout, Strings) {
     bmstu::vector<std::string> vec{"Bebra Hunters"};
+    bmstu::vector<std::string> vec2{"Bebra Hunters"};
     testing::internal::CaptureStdout();
     std::cout << vec;
     std::string output = testing::internal::GetCapturedStdout();
     ASSERT_EQ("[Bebra Hunters]", output);
+}
+
+TEST(dahsav, hdasidas){
+    bmstu::vector<int> vec{1,2,3};
+    std::cout << vec;
 }

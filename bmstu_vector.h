@@ -96,29 +96,14 @@ namespace bmstu {
             }
         }
 
-//        vector(size_t size, const T &value = T{}) : data_(size), size_(size) {
-//            if constexpr (std::is_default_constructible_v<T>) {
-//                std::fill(data_.get_address(), data_.get_address() + size, value);
-//            } else {
-//                uint8_t *ptr = reinterpret_cast<uint8_t *>(static_cast<void *>(data_.get_address()));
-//                std::fill(ptr, ptr + (size * sizeof(T)), 0);
-//            }
-//        }
 
-        vector(std::initializer_list<T> ilist) : size_(ilist.size()), data_(ilist.size()) {
-            if constexpr (std::is_move_constructible_v<T>) {
-                std::move((ilist.begin()), ilist.end(), data_.get_address());
-            } else {
-                std::copy((ilist.begin()), ilist.end(), data_.get_address());
-            }
-
+        vector(std::initializer_list<T> ilist) : data_(ilist.size()), size_(ilist.size()) {
+            std::copy(ilist.begin(), ilist.end(), begin());
         }
 
 
         vector(const vector &other) : data_(other.size_), size_(other.size_) {
-
             std::uninitialized_copy_n(other.data_.get_address(), other.size_, data_.get_address());
-
         }
 
         vector(vector &&other) noexcept {
@@ -186,6 +171,32 @@ namespace bmstu {
             return data_.get_address() + size_;
         }
 
+        typename iterator::reference operator[](size_t index) noexcept {
+            return data_[index];
+        }
+
+        typename const_iterator::reference operator[](size_t index) const noexcept {
+            return const_cast <typename const_iterator::reference> (data_[index]);
+        }
+
+        typename iterator::reference at(size_t index) {
+            if (index > size_) {
+                throw std::out_of_range("Invalid index");
+            } else {
+                return data_[index];
+            }
+        }
+
+        typename const_iterator::reference at(size_t index) const {
+            if (index > size_) {
+                throw std::out_of_range("Invalid index");
+            } else {
+                return const_cast <typename const_iterator::value_type>(data_[index]);
+            }
+
+        }
+
+
         void clear() noexcept {
             size_ = 0;
         }
@@ -218,7 +229,7 @@ namespace bmstu {
                     reserve(new_size * 2);
                 }
                 raw_memory<T> new_data(new_size);
-                std::uninitialized_copy_n(data_.get_address(), size_,new_data.get_address());
+                std::uninitialized_copy_n(data_.get_address(), size_, new_data.get_address());
                 data_.swap(new_data);
                 size_ = new_size;
             }
@@ -229,13 +240,13 @@ namespace bmstu {
             --size_;
         }
 
-        T &operator[](size_t index) noexcept {
-            return data_[index];
-        }
-
-        const T &operator[](size_t index) const noexcept {
-            return const_cast<vector<T> &>(*this)[index];
-        }
+//        T &operator[](size_t index) noexcept {
+//            return data_[index];
+//        }
+//
+//        const T &operator[](size_t index) const noexcept {
+//            return const_cast<vector<T> &>(*this)[index];
+//        }
 
         template<typename ... Args>
         T &emplace_back(Args &&... args) {
@@ -276,7 +287,7 @@ namespace bmstu {
                         throw;
                     }
                 }
-                if constexpr (std::is_nothrow_constructible_v<T> || !std::is_nothrow_copy_constructible_v<T>) {
+                if constexpr (std::is_nothrow_move_constructible_v<T> || !std::is_nothrow_copy_constructible_v<T>) {
                     std::uninitialized_move_n(data_.get_address() + dest_pos, size_ - dest_pos,
                                               new_data.get_address() + dest_pos + 1);
                 } else {
@@ -291,7 +302,7 @@ namespace bmstu {
                 if constexpr (std::is_nothrow_move_constructible_v<T> || !std::is_copy_constructible_v<T>) {
                     new_data[dest_pos] = std::move(args...);
                 } else {
-                    std::copy(new_data[dest_pos],args...);
+                    std::copy(new_data[dest_pos], args...);
                 }
                 std::destroy_n(data_.get_address(), size_);
                 data_.swap(new_data);
@@ -374,12 +385,7 @@ namespace bmstu {
 
         template<class S>
         friend S &operator<<(S &os, const vector<T> &other) {
-            os << "[";
-            for (size_t i = 0; i < other.size_ - 1; ++i) {
-                os << other[i] << ", ";
-            }
-            os << other[other.size_ - 1];
-            os << "]";
+            os << "░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░\n";
             return os;
         }
 
