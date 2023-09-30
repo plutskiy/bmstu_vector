@@ -240,14 +240,6 @@ namespace bmstu {
             --size_;
         }
 
-//        T &operator[](size_t index) noexcept {
-//            return data_[index];
-//        }
-//
-//        const T &operator[](size_t index) const noexcept {
-//            return const_cast<vector<T> &>(*this)[index];
-//        }
-
         template<typename ... Args>
         T &emplace_back(Args &&... args) {
             if (size_ == capacity()) {
@@ -385,7 +377,12 @@ namespace bmstu {
 
         template<class S>
         friend S &operator<<(S &os, const vector<T> &other) {
-            os << "░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░\n";
+            os << "[" << other[0];
+            for(size_t i = 1; i != other.size_; ++i ){
+                os << ", " << other[i];
+            }
+            os << "]";
+
             return os;
         }
 
